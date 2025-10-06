@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta name="google-site-verification" content="rd3e2zvgvc_FYIuSOG01MEmWKf7cFx-92v6ptVrp_tM" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuron Password Generator | Neuron Ecosystem</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔑</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #0f0f23;
+            --card-bg: #1a1b2e;
+            --text: #ffffff;
+            --text-secondary: #a0a0c0;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: rgba(255,255,255,0.1);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+        }
+
+        .range-value {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .checkbox-item input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .difficulty-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .difficulty-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .password-result {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            word-break: break-all;
+            display: none;
+        }
+
+        #generatedPassword {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .copy-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h2 {
+            color: var(--text);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .history-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-password {
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin-right: 15px;
+            color: var(--text-secondary);
+        }
+
+        .history-copy {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .history-copy:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .neuron-badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Стили для уведомления о копировании */
+        .copy-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+        }
+
+        /* Социальные кнопки */
+        .social-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .social-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .social-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid var(--border);
+        }
+
+        .social-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .telegram {
+            background: linear-gradient(135deg, #0088cc, #00aced);
+            color: white;
+        }
+
+        .web {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .email {
+            background: linear-gradient(135deg, #ea4335, #d14836);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .difficulty-buttons {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1>Neuron Password Generator</h1>
+            <p class="subtitle">Безопасные пароли в стиле Neuron Ecosystem</p>
+            <div class="neuron-badge">Neuron Ecosystem</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="length">Длина пароля: <span id="lengthValue">12</span> символов</label>
+            <input type="range" id="length" min="5" max="50" value="12">
+        </div>
+        
+        <div class="input-group">
+            <label>Использовать символы:</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lowercase" checked>
+                    <label for="lowercase">a-z</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="uppercase" checked>
+                    <label for="uppercase">A-Z</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="numbers" checked>
+                    <label for="numbers">0-9</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="symbols">
+                    <label for="symbols">!@#$%^&*</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label>Сложность:</label>
+            <div class="difficulty-buttons">
+                <button type="button" class="difficulty-btn" data-level="easy">Легкий</button>
+                <button type="button" class="difficulty-btn active" data-level="medium">Средний</button>
+                <button type="button" class="difficulty-btn" data-level="hard">Сложный</button>
+            </div>
+        </div>
+        
+        <button id="generateBtn" class="generate-btn">
+            <i class="fas fa-key"></i> Сгенерировать пароль
+        </button>
+        
+        <div id="passwordResult" class="password-result">
+            <div id="generatedPassword"></div>
+            <div class="password-actions">
+                <button id="copyBtn" class="copy-btn">
+                    <i class="fas fa-copy"></i> Копировать
+                </button>
+            </div>
+        </div>
+        
+        <div class="history">
+            <h2>История генерации</h2>
+            <div id="historyList" class="history-list"></div>
+        </div>
+
+        <div class="social-section">
+            <div class="social-title">Neuron Ecosystem</div>
+            <div class="social-grid">
+                <a href="https://t.me/neuron_ecosystem" class="social-button telegram" target="_blank">
+                    <i class="fab fa-telegram"></i>
+                </a>
+                <a href="https://neuron-p2p.ru" class="social-button web" target="_blank">
+                    <i class="fas fa-globe"></i>
+                </a>
+                <a href="#" class="social-button email" id="emailButton">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Все пароли создаются и хранятся на вашем устройстве!</p>
+        <p>Безопасность и конфиденциальность — наш приоритет</p>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        <i class="fas fa-check"></i> Скопировано в буфер обмена
+    </div>
+
+    <script>
+        // Частицы для фона
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 2px;
+                    height: 2px;
+                    background: var(--primary);
+                    border-radius: 50%;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation: floatParticle ${10 + Math.random() * 20}s linear infinite;
+                `;
+                particles.appendChild(particle);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatParticle {
+                0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Элементы DOM
+        const lengthSlider = document.getElementById('length');
+        const lengthValue = document.getElementById('lengthValue');
+        const lowercaseCheckbox = document.getElementById('lowercase');
+        const uppercaseCheckbox = document.getElementById('uppercase');
+        const numbersCheckbox = document.getElementById('numbers');
+        const symbolsCheckbox = document.getElementById('symbols');
+        const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+        const generateBtn = document.getElementById('generateBtn');
+        const passwordResult = document.getElementById('passwordResult');
+        const generatedPassword = document.getElementById('generatedPassword');
+        const copyBtn = document.getElementById('copyBtn');
+        const historyList = document.getElementById('historyList');
+        const emailButton = document.getElementById('emailButton');
+        const copyNotification = document.getElementById('copyNotification');
+
+        // Настройки сложности
+        const difficultySettings = {
+            easy: {
+                length: 8,
+                lowercase: true,
+                uppercase: false,
+                numbers: false,
+                symbols: false
+            },
+            medium: {
+                length: 12,
+                lowercase: true,
+                uppercase: true,
+                numbers: true,
+                symbols: false
+            },
+            hard: {
+                length: 16,
+                lowercase: true,
+                uppercase: true,
+                numbers: true,
+                symbols: true
+            }
+        };
+
+        // Символы для генерации
+        const chars = {
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+
+        // Загрузка истории из localStorage
+        let passwordHistory = JSON.parse(localStorage.getItem('neuronPasswordHistory')) || [];
+
+        // Обновление отображения длины пароля
+        lengthSlider.addEventListener('input', function() {
+            lengthValue.textContent = this.value;
+        });
+
+        // Обработчики кнопок сложности
+        difficultyBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                difficultyBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const level = this.dataset.level;
+                const settings = difficultySettings[level];
+                
+                lengthSlider.value = settings.length;
+                lengthValue.textContent = settings.length;
+                lowercaseCheckbox.checked = settings.lowercase;
+                uppercaseCheckbox.checked = settings.uppercase;
+                numbersCheckbox.checked = settings.numbers;
+                symbolsCheckbox.checked = settings.symbols;
+            });
+        });
+
+        // Генерация пароля
+        generateBtn.addEventListener('click', function() {
+            const length = parseInt(lengthSlider.value);
+            const useLowercase = lowercaseCheckbox.checked;
+            const useUppercase = uppercaseCheckbox.checked;
+            const useNumbers = numbersCheckbox.checked;
+            const useSymbols = symbolsCheckbox.checked;
+            
+            if (!useLowercase && !useUppercase && !useNumbers && !useSymbols) {
+                showNotification('Выберите хотя бы один тип символов!', 'error');
+                return;
+            }
+            
+            let charPool = '';
+            if (useLowercase) charPool += chars.lowercase;
+            if (useUppercase) charPool += chars.uppercase;
+            if (useNumbers) charPool += chars.numbers;
+            if (useSymbols) charPool += chars.symbols;
+            
+            let password = '';
+            const array = new Uint32Array(length);
+            window.crypto.getRandomValues(array);
+            
+            for (let i = 0; i < length; i++) {
+                password += charPool[array[i] % charPool.length];
+            }
+            
+            generatedPassword.textContent = password;
+            passwordResult.style.display = 'block';
+            
+            // Добавление в историю
+            passwordHistory.unshift({
+                password: password,
+                timestamp: new Date().toLocaleString('ru-RU')
+            });
+            
+            // Ограничение истории 15 элементами
+            if (passwordHistory.length > 15) {
+                passwordHistory = passwordHistory.slice(0, 15);
+            }
+            
+            // Сохранение в localStorage
+            localStorage.setItem('neuronPasswordHistory', JSON.stringify(passwordHistory));
+            
+            // Обновление отображения истории
+            updateHistoryDisplay();
+        });
+
+        // Копирование пароля
+        copyBtn.addEventListener('click', function() {
+            const password = generatedPassword.textContent;
+            if (!password) return;
+            
+            navigator.clipboard.writeText(password).then(() => {
+                showNotification('Пароль скопирован!');
+            }).catch(() => {
+                // Fallback для браузеров без Clipboard API
+                const textarea = document.createElement('textarea');
+                textarea.value = password;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification('Пароль скопирован!');
+            });
+        });
+
+        // Обновление отображения истории
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            
+            if (passwordHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">История пуста</p>';
+                return;
+            }
+            
+            passwordHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                historyItem.innerHTML = `
+                    <div>
+                        <div class="history-password">${item.password}</div>
+                        <small style="color: var(--text-secondary); font-size: 0.8rem;">${item.timestamp}</small>
+                    </div>
+                    <button class="history-copy" data-index="${index}">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+            
+            // Обработчики копирования из истории
+            document.querySelectorAll('.history-copy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    const password = passwordHistory[index].password;
+                    
+                    navigator.clipboard.writeText(password).then(() => {
+                        showNotification('Пароль скопирован!');
+                    }).catch(() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = password;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        showNotification('Пароль скопирован!');
+                    });
+                });
+            });
+        }
+
+        // Показать уведомление
+        function showNotification(message, type = 'success') {
+            copyNotification.innerHTML = type === 'error' ? 
+                `<i class="fas fa-exclamation-triangle"></i> ${message}` :
+                `<i class="fas fa-check"></i> ${message}`;
+                
+            copyNotification.style.background = type === 'error' ? 
+                'linear-gradient(135deg, var(--error), #dc2626)' :
+                'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+                
+            copyNotification.classList.add('show');
+            setTimeout(() => {
+                copyNotification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Копирование email
+        emailButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = 'wertq6306@gmail.com';
+            
+            navigator.clipboard.writeText(email).then(() => {
+                showNotification('Email скопирован!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = email;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification('Email скопирован!');
+            });
+        });
+
+        // Инициализация
+        createParticles();
+        updateHistoryDisplay();
+
+        // Добавляем интерактивность для карточек
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.checkbox-item');
+            checkboxes.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
